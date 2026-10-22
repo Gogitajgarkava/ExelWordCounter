@@ -1,0 +1,11 @@
+node_modules
+.vercel
+icons
+assets/sprite.html
+src
+tests
+package.json
+package-lock.json
+tailwind.config.cjs
+README.md
+.gitignore

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WordCounter — Excel ტექსტის ანალიზატორი</title>
+  <meta
+    name="description"
+    content="უფასო Excel და CSV ტექსტის ანალიზატორი: სიტყვების, უნიკალური სიტყვების, სიმბოლოებისა და სიხშირის დათვლა პირდაპირ ბრაუზერში. ფაილი არსად იტვირთება."
+  />
+  <meta name="theme-color" content="#059669" />
+  <meta name="color-scheme" content="light" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="WordCounter — Excel ტექსტის ანალიზატორი" />
+  <meta
+    property="og:description"
+    content="ატვირთე Excel ან CSV ფაილი და მიიღე სიტყვების სიხშირე, უნიკალური სიტყვები და სიმბოლოების სტატისტიკა წამებში."
+  />
+  <meta name="twitter:card" content="summary" />
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/noto-georgian.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/app.css" />
+  <script src="vendor/xlsx.full.min.js" defer></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+
+<body class="flex min-h-screen flex-col">
+  <svg xmlns="http://www.w3.org/2000/svg" class="pointer-events-none absolute h-0 w-0 overflow-hidden" aria-hidden="true"><defs>
+  <symbol id="i-align-left" viewBox="0 0 24 24"><path d="M21 5H3" />
+  <path d="M15 12H3" />
+  <path d="M17 19H3" /></symbol>
+  <symbol id="i-arrow-down-wide-narrow" viewBox="0 0 24 24"><path d="m3 16 4 4 4-4" />
+  <path d="M7 20V4" />
+  <path d="M11 4h10" />
+  <path d="M11 8h7" />
+  <path d="M11 12h4" /></symbol>
+  <symbol id="i-binary" viewBox="0 0 24 24"><rect x="14" y="14" width="4" height="6" rx="2" />
+  <rect x="6" y="4" width="4" height="6" rx="2" />
+  <path d="M6 20h4" />
+  <path d="M14 10h4" />
+  <path d="M6 14h2v6" />
+  <path d="M14 4h2v6" /></symbol>
+  <symbol id="i-chart-no-axes-column" viewBox="0 0 24 24"><path d="M5 21v-6" />
+  <path d="M12 21V3" />
+  <path d="M19 21V9" /></symbol>
+  <symbol id="i-circle-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <line x1="12" x2="12" y1="8" y2="12" />
+  <line x1="12" x2="12.01" y1="16" y2="16" /></symbol>
+  <symbol id="i-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <path d="m16 9-5.5 5.5L8 12" /></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 15V3" />
+  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+  <path d="m7 10 5 5 5-5" /></symbol>
+  <symbol id="i-file-check" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+  <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+  <path d="m9 15 2 2 4-4" /></symbol>
+  <symbol id="i-file-spreadsheet" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+  <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+  <path d="M8 13h2" />
+  <path d="M14 13h2" />
+  <path d="M8 17h2" />
+  <path d="M14 17h2" /></symbol>
+  <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+  <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+  <path d="M10 9H8" />
+  <path d="M16 13H8" />
+  <path d="M16 17H8" /></symbol>
+  <symbol id="i-file-up" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+  <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+  <path d="M12 12v6" />
+  <path d="m15 15-3-3-3 3" /></symbol>
+  <symbol id="i-filter-x" viewBox="0 0 24 24"><path d="M12.531 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14v6a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341l.427-.473" />
+  <path d="m16.5 3.5 5 5" />
+  <path d="m21.5 3.5-5 5" /></symbol>
+  <symbol id="i-fingerprint" viewBox="0 0 24 24"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" />
+  <path d="M14 13.12c0 2.38 0 6.38-1 8.88" />
+  <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02" />
+  <path d="M2 12a10 10 0 0 1 18-6" />
+  <path d="M2 16h.01" />
+  <path d="M21.8 16c.2-2 .131-5.354 0-6" />
+  <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2" />
+  <path d="M8.65 22c.21-.66.45-1.32.57-2" />
+  <path d="M9 6.8a6 6 0 0 1 9 5.2v2" /></symbol>
+  <symbol id="i-folder-open" viewBox="0 0 24 24"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2" /></symbol>
+  <symbol id="i-grid-3x3" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" />
+  <path d="M3 9h18" />
+  <path d="M3 15h18" />
+  <path d="M9 3v18" />
+  <path d="M15 3v18" /></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <path d="M12 16v-4" />
+  <path d="M12 8h.01" /></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" />
+  <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" />
+  <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /></symbol>
+  <symbol id="i-layout-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1" />
+  <rect width="7" height="7" x="14" y="3" rx="1" />
+  <rect width="7" height="7" x="14" y="14" rx="1" />
+  <rect width="7" height="7" x="3" y="14" rx="1" /></symbol>
+  <symbol id="i-loader-circle" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></symbol>
+  <symbol id="i-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+  <path d="M3 3v5h5" /></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" />
+  <circle cx="11" cy="11" r="8" /></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+  <path d="m9 12 2 2 4-4" /></symbol>
+  <symbol id="i-sliders-horizontal" viewBox="0 0 24 24"><path d="M10 5H3" />
+  <path d="M12 19H3" />
+  <path d="M14 3v4" />
+  <path d="M16 17v4" />
+  <path d="M21 12h-9" />
+  <path d="M21 19h-5" />
+  <path d="M21 5h-7" />
+  <path d="M8 10v4" />
+  <path d="M8 12H3" /></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
+  <path d="M20 2v4" />
+  <path d="M22 4h-4" />
+  <circle cx="4" cy="20" r="2" /></symbol>
+  <symbol id="i-table-2" viewBox="0 0 24 24"><path d="M3 9h18" />
+  <path d="M9 3v18" />
+  <rect x="3" y="3" width="18" height="18" rx="2" /></symbol>
+  <symbol id="i-trash-2" viewBox="0 0 24 24"><path d="M10 11v6" />
+  <path d="M14 11v6" />
+  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+  <path d="M3 6h18" />
+  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></symbol>
+  <symbol id="i-type" viewBox="0 0 24 24"><path d="M12 4v16" />
+  <path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2" />
+  <path d="M9 20h6" /></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" />
+  <path d="m6 6 12 12" /></symbol>
+</defs></svg>
+
+  <a
+    href="#main"
+    class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+  >
+    გადასვლა ძირითად შიგთავსზე
+  </a>
+
+  <!-- Toast -->
+  <div
+    id="toast"
+    role="status"
+    aria-live="polite"
+    class="pointer-events-none fixed right-4 top-4 z-50 hidden"
+  >
+    <div
+      class="flex max-w-sm items-center gap-2.5 rounded-xl border border-slate-700 bg-slate-900/95 px-4 py-3 text-white shadow-2xl backdrop-blur"
+    >
+      <svg id="toastIcon" class="icon icon-sm text-emerald-400" aria-hidden="true"><use href="#i-circle-check"></use></svg>
+      <span id="toastMessage" class="text-sm font-medium"></span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      <a href="#main" class="flex min-w-0 items-center gap-3 rounded-lg">
+        <span
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-teal-500 text-white shadow-md shadow-brand-500/25"
+        >
+          <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-file-spreadsheet"></use></svg>
+        </span>
+        <span class="min-w-0">
+          <span class="block truncate text-base font-extrabold leading-tight tracking-tight text-slate-900">
+            WordCounter
+          </span>
+          <span class="block truncate text-[11px] font-medium text-slate-500">Excel ტექსტის ანალიტიკა</span>
+        </span>
+      </a>
+
+      <nav class="hidden items-center gap-1 text-xs font-semibold text-slate-500 md:flex" aria-label="ნავიგაცია">
+        <a href="#inputCard" class="rounded-lg px-2.5 py-1.5 transition-colors hover:bg-slate-100 hover:text-slate-900">
+          ატვირთვა
+        </a>
+        <a href="#results" class="rounded-lg px-2.5 py-1.5 transition-colors hover:bg-slate-100 hover:text-slate-900">
+          შედეგები
+        </a>
+      </nav>
+
+      <div class="flex shrink-0 items-center gap-2">
+        <span
+          class="hidden items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 text-[11px] font-bold text-brand-700 sm:inline-flex"
+          title="ფაილი არ იტვირთება სერვერზე — ყველაფერი მუშავდება ბრაუზერში"
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
+          100% ლოკალური
+        </span>
+        <button
+          id="sampleBtn"
+          type="button"
+          class="btn-ghost px-2.5 py-1.5 text-xs"
+          aria-label="დემო — სადემონსტრაციო ტექსტის ჩატვირთვა"
+        >
+          <svg class="icon icon-xs text-amber-500" aria-hidden="true"><use href="#i-sparkles"></use></svg>
+          <span class="hidden sm:inline">დემო</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="mx-auto w-full max-w-7xl flex-1 px-4 pb-12 pt-6 sm:px-6 lg:px-8">
+    <!-- Intro -->
+    <section class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-600">Excel → ანალიტიკა</p>
+        <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+          დათვალე სიტყვები, სიმბოლოები და სიხშირე
+        </h1>
+        <p class="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-500">
+          ატვირთე Excel ან CSV ფაილი, ან უბრალოდ ჩასვი ტექსტი. შედეგი მზადაა წამებში — ფაილი შენს ბრაუზერს არ ტოვებს.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <span class="chip">
+          <svg class="icon icon-xs text-brand-600" aria-hidden="true"><use href="#i-shield-check"></use></svg>
+          რეგისტრაციის გარეშე
+        </span>
+        <span class="chip">
+          <svg class="icon icon-xs text-brand-600" aria-hidden="true"><use href="#i-layers"></use></svg>
+          XLSX · XLS · CSV
+        </span>
+      </div>
+    </section>
+
+    <!-- Input -->
+    <section id="inputCard" class="card overflow-hidden" aria-label="მონაცემების ატვირთვა">
+      <div class="border-b border-slate-200 bg-slate-50/70 px-3 py-3 sm:px-4">
+        <div class="segmented w-full sm:w-auto" role="tablist" aria-label="მონაცემების წყარო">
+          <button
+            id="tab-file"
+            type="button"
+            role="tab"
+            data-mode="file"
+            aria-selected="true"
+            aria-controls="panel-file"
+            class="segment flex-1 sm:flex-none"
+          >
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-file-spreadsheet"></use></svg>
+            Excel ფაილი
+          </button>
+          <button
+            id="tab-text"
+            type="button"
+            role="tab"
+            data-mode="text"
+            aria-selected="false"
+            aria-controls="panel-text"
+            class="segment flex-1 sm:flex-none"
+          >
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-align-left"></use></svg>
+            ტექსტი
+          </button>
+        </div>
+      </div>
+
+      <div class="p-4 sm:p-6">
+        <div id="panel-file" role="tabpanel" aria-labelledby="tab-file">
+          <div
+            id="dropzone"
+            role="button"
+            tabindex="0"
+            aria-label="Excel ან CSV ფაილის ატვირთვა — დააჭირე ან ჩააგდე ფაილი"
+            class="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/60 px-5 py-9 text-center transition-all duration-200 hover:border-brand-500 hover:bg-brand-50/40 sm:py-11"
+          >
+            <input
+              type="file"
+              id="fileInput"
+              accept=".xlsx,.xls,.xlsm,.csv"
+              class="hidden"
+              tabindex="-1"
+              aria-hidden="true"
+            />
+            <span
+              class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 shadow-inner transition-all duration-200 group-hover:scale-105 group-hover:bg-brand-600 group-hover:text-white"
+            >
+              <svg class="icon h-7 w-7" aria-hidden="true"><use href="#i-file-up"></use></svg>
+            </span>
+            <h2 class="mt-4 text-base font-bold text-slate-800">
+              ჩააგდე ფაილი აქ ან დააჭირე ასატვირთად
+            </h2>
+            <p class="mt-1 text-xs text-slate-500">XLSX · XLS · CSV · მაქსიმუმ 25 MB</p>
+            <span class="btn-primary pointer-events-none mt-4 px-4 py-2 text-xs">
+              <svg class="icon icon-sm" aria-hidden="true"><use href="#i-folder-open"></use></svg>
+              ფაილის არჩევა
+            </span>
+          </div>
+
+          <div
+            id="fileMeta"
+            class="mt-3 hidden flex-col gap-3 rounded-xl border border-brand-200 bg-brand-50/60 p-3 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div class="flex min-w-0 items-center gap-3">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-brand-600 ring-1 ring-brand-200">
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-file-check"></use></svg>
+              </span>
+              <div class="min-w-0">
+                <p id="fileName" class="truncate text-xs font-bold text-slate-800"></p>
+                <p id="fileMetaLine" class="text-[11px] text-slate-500"></p>
+              </div>
+            </div>
+            <button id="clearFileBtn" type="button" class="btn-ghost shrink-0 px-2.5 py-1.5 text-xs">
+              <svg class="icon icon-xs" aria-hidden="true"><use href="#i-trash-2"></use></svg>
+              წაშლა
+            </button>
+          </div>
+
+          <div
+            id="busyBar"
+            class="mt-3 hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-500"
+            aria-live="polite"
+          >
+            <svg class="icon icon-sm animate-spin text-brand-600" aria-hidden="true"><use href="#i-loader-circle"></use></svg>
+            <span id="busyText">მონაცემები მუშავდება…</span>
+          </div>
+        </div>
+
+        <div id="panel-text" role="tabpanel" aria-labelledby="tab-text" class="hidden">
+          <div class="relative">
+            <label for="rawText" class="sr-only">ტექსტი ანალიზისთვის</label>
+            <textarea
+              id="rawText"
+              class="field custom-scrollbar h-44 w-full resize-y p-3.5 pr-11 text-sm leading-relaxed"
+              placeholder="ჩასვი ან აკრიფე ტექსტი აქ… თითო ხაზი ცალკე უჯრად ითვლება."
+            ></textarea>
+            <button
+              id="clearTextBtn"
+              type="button"
+              class="btn-icon absolute right-2 top-2 hidden"
+              title="ტექსტის გასუფთავება"
+              aria-label="ტექსტის გასუფთავება"
+            >
+              <svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"></use></svg>
+            </button>
+          </div>
+          <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
+            <p id="textStats" class="text-xs font-medium text-slate-500"></p>
+            <p class="text-[11px] text-slate-500">ანალიზი განახლდება ავტომატურად</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live stats -->
+    <section aria-label="ცოცხალი სტატისტიკა" class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+      <article class="stat-card">
+        <div class="flex items-start justify-between gap-2">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-file-text"></use></svg>
+          </span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">სიტყვები</span>
+        </div>
+        <p id="statWords" class="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">0</p>
+        <p class="mt-0.5 text-[11px] text-slate-500">სულ ნაპოვნი</p>
+      </article>
+
+      <article class="stat-card">
+        <div class="flex items-start justify-between gap-2">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-fingerprint"></use></svg>
+          </span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">უნიკალური</span>
+        </div>
+        <p id="statUnique" class="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">0</p>
+        <p class="mt-0.5 text-[11px] text-slate-500">განსხვავებული სიტყვა</p>
+      </article>
+
+      <article class="stat-card">
+        <div class="flex items-start justify-between gap-2">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-type"></use></svg>
+          </span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">სიმბოლოები</span>
+        </div>
+        <p id="statChars" class="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">0</p>
+        <p class="mt-0.5 text-[11px] text-slate-500">ჰარების ჩათვლით</p>
+      </article>
+
+      <article class="stat-card">
+        <div class="flex items-start justify-between gap-2">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-binary"></use></svg>
+          </span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">სიმბოლოები</span>
+        </div>
+        <p id="statCharsNoSpace" class="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">0</p>
+        <p class="mt-0.5 text-[11px] text-slate-500">ჰარების გარეშე</p>
+      </article>
+
+      <article class="stat-card">
+        <div class="flex items-start justify-between gap-2">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-grid-3x3"></use></svg>
+          </span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">უჯრები</span>
+        </div>
+        <p id="statCells" class="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">0</p>
+        <p class="mt-0.5 text-[11px] text-slate-500">შევსებული უჯრა / ხაზი</p>
+      </article>
+
+      <article class="stat-card">
+        <div class="flex items-start justify-between gap-2">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-filter-x"></use></svg>
+          </span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">გამოტოვებული</span>
+        </div>
+        <p id="statSkipped" class="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 tabular-nums">0</p>
+        <p id="statSkippedHint" class="mt-0.5 text-[11px] text-slate-500">ფილტრით დაბლოკილი</p>
+      </article>
+    </section>
+
+    <!-- Settings -->
+    <section id="settingsCard" class="card mt-6" aria-labelledby="settingsTitle">
+      <div class="flex flex-col gap-3 border-b border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div class="flex items-center gap-2.5">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-sliders-horizontal"></use></svg>
+          </span>
+          <div>
+            <h2 id="settingsTitle" class="text-sm font-bold text-slate-900">ფილტრები და პარამეტრები</h2>
+            <p class="text-[11px] text-slate-500">შედეგები განახლდება ავტომატურად</p>
+          </div>
+        </div>
+        <button id="resetBtn" type="button" class="btn-soft self-start px-2.5 py-1.5 text-xs sm:self-auto">
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-rotate-ccw"></use></svg>
+          ნაგულისხმევი
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-6">
+        <div id="filterSummary" class="flex flex-wrap gap-1.5" aria-label="აქტიური ფილტრები"></div>
+
+        <div class="mt-4 grid gap-3 lg:grid-cols-2">
+          <div class="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+            <label for="sheetSelect" class="label">
+              <svg class="icon icon-xs text-slate-400" aria-hidden="true"><use href="#i-layers"></use></svg>
+              Excel Sheet
+            </label>
+            <select id="sheetSelect" class="field">
+              <option value="__all__">ყველა Sheet</option>
+            </select>
+            <p id="sheetHint" class="mt-1.5 text-[11px] font-medium text-slate-500">
+              აირჩიეთ კონკრეტული Sheet ან მთელი ფაილი
+            </p>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p class="text-[13px] font-semibold text-slate-800">მინიმალური სიტყვის სიგრძე</p>
+                <p class="mt-0.5 text-[11px] text-slate-500">მოკლე სიტყვები არ ჩაითვლება</p>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <input
+                  id="minWordLen"
+                  type="range"
+                  min="1"
+                  max="10"
+                  step="1"
+                  value="1"
+                  class="w-28 sm:w-36"
+                  aria-label="მინიმალური სიტყვის სიგრძე"
+                />
+                <span
+                  id="minWordLenVal"
+                  class="inline-flex h-7 min-w-[2rem] items-center justify-center rounded-md bg-brand-100 px-1.5 text-xs font-bold text-brand-700"
+                >1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
+          <label class="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-3 transition-colors hover:bg-slate-100/70">
+            <span class="min-w-0">
+              <span class="block text-[13px] font-semibold text-slate-800">მხოლოდ ციფრების იგნორირება</span>
+              <span class="mt-0.5 block text-[11px] leading-snug text-slate-500">მაგ: 125, 99.9, 004, ₾ 1 250</span>
+            </span>
+            <span class="flex pt-0.5">
+              <input id="filterNumbers" type="checkbox" class="toggle-input" checked />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </span>
+          </label>
+
+          <label class="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-3 transition-colors hover:bg-slate-100/70">
+            <span class="min-w-0">
+              <span class="block text-[13px] font-semibold text-slate-800">პუნქტუაციის ამოღება</span>
+              <span class="mt-0.5 block text-[11px] leading-snug text-slate-500">სასვენი ნიშნები სიტყვას არ მიეწებება</span>
+            </span>
+            <span class="flex pt-0.5">
+              <input id="filterPunctuation" type="checkbox" class="toggle-input" checked />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </span>
+          </label>
+
+          <label class="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-3 transition-colors hover:bg-slate-100/70">
+            <span class="min-w-0">
+              <span class="block text-[13px] font-semibold text-slate-800">სათაურების გამოტოვება</span>
+              <span class="mt-0.5 block text-[11px] leading-snug text-slate-500">Excel-ის 1-ლი რიგი / ტექსტის 1-ლი ხაზი</span>
+            </span>
+            <span class="flex pt-0.5">
+              <input id="filterHeader" type="checkbox" class="toggle-input" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </span>
+          </label>
+
+          <label class="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-3 transition-colors hover:bg-slate-100/70">
+            <span class="min-w-0">
+              <span class="block text-[13px] font-semibold text-slate-800">ბმულების და Email-ების გამოტოვება</span>
+              <span class="mt-0.5 block text-[11px] leading-snug text-slate-500">http://, www, name@mail.com</span>
+            </span>
+            <span class="flex pt-0.5">
+              <input id="filterUrlsEmails" type="checkbox" class="toggle-input" checked />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </span>
+          </label>
+
+          <label class="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-3 transition-colors hover:bg-slate-100/70">
+            <span class="min-w-0">
+              <span class="block text-[13px] font-semibold text-slate-800">რეგისტრის იგნორირება</span>
+              <span class="mt-0.5 block text-[11px] leading-snug text-slate-500">„Word“ და „word“ ერთ სიტყვად ითვლება</span>
+            </span>
+            <span class="flex pt-0.5">
+              <input id="filterCase" type="checkbox" class="toggle-input" checked />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section id="results" class="card mt-6 overflow-hidden" aria-labelledby="resultsTitle">
+      <h2 id="resultsTitle" class="sr-only">ანალიზის შედეგები</h2>
+
+      <div class="border-b border-slate-200 bg-slate-50/70 px-4 py-3 sm:px-6">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div class="no-scrollbar flex items-center gap-1 overflow-x-auto" role="tablist" aria-label="შედეგების ხედი">
+            <button
+              id="view-freq"
+              type="button"
+              role="tab"
+              data-view="freq"
+              aria-selected="true"
+              aria-controls="viewPanel-freq"
+              class="segment whitespace-nowrap"
+            >
+              <svg class="icon icon-sm" aria-hidden="true"><use href="#i-chart-no-axes-column"></use></svg>
+              სიტყვების სიხშირე
+            </button>
+            <button
+              id="view-preview"
+              type="button"
+              role="tab"
+              data-view="preview"
+              aria-selected="false"
+              aria-controls="viewPanel-preview"
+              class="segment whitespace-nowrap"
+            >
+              <svg class="icon icon-sm" aria-hidden="true"><use href="#i-table-2"></use></svg>
+              მონაცემების გადახედვა
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div class="relative">
+              <svg
+                class="icon icon-sm pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                aria-hidden="true"
+              ><use href="#i-search"></use></svg>
+              <label for="searchInput" class="sr-only">სიტყვის ძებნა</label>
+              <input
+                id="searchInput"
+                type="search"
+                class="field py-2 pl-9 pr-3 text-xs sm:w-52"
+                placeholder="სიტყვის ძებნა…"
+                autocomplete="off"
+              />
+            </div>
+            <div class="flex items-center gap-2">
+              <label for="sortSelect" class="sr-only">სორტირება</label>
+              <select id="sortSelect" class="field py-2 text-xs sm:w-36">
+                <option value="count">სიხშირით</option>
+                <option value="alpha">ანბანით</option>
+              </select>
+              <button id="exportBtn" type="button" class="btn-dark flex-1 px-3 py-2 text-xs sm:flex-none">
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-download"></use></svg>
+                CSV
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5 sm:px-6">
+        <p id="resultMeta" class="text-xs font-medium text-slate-500" aria-live="polite">შედეგი ცარიელია</p>
+        <span class="chip hidden shrink-0 sm:inline-flex">
+          <svg class="icon icon-xs text-brand-600" aria-hidden="true"><use href="#i-shield-check"></use></svg>
+          ლოკალური დამუშავება
+        </span>
+      </div>
+
+      <div id="viewPanel-freq" role="tabpanel" aria-labelledby="view-freq">
+        <div class="p-4 sm:p-6">
+          <div
+            class="custom-scrollbar max-h-[28rem] overflow-auto rounded-xl border border-slate-200"
+            role="region"
+            aria-label="სიტყვების სიხშირის ცხრილი"
+            tabindex="0"
+          >
+            <table class="w-full border-collapse text-left">
+              <caption class="sr-only">
+                სიტყვების სიხშირის ცხრილი
+              </caption>
+              <thead class="table-head">
+                <tr>
+                  <th scope="col" class="hidden w-12 px-4 py-3 text-center sm:table-cell">#</th>
+                  <th scope="col" class="px-4 py-3">სიტყვა</th>
+                  <th scope="col" class="w-24 px-4 py-3 text-center">რაოდენობა</th>
+                  <th scope="col" class="hidden px-4 py-3 md:table-cell">წილი ტექსტში</th>
+                </tr>
+              </thead>
+              <tbody id="freqBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+
+          <div id="freqFooter" class="mt-3 hidden items-center justify-between gap-3">
+            <p id="freqRange" class="text-xs text-slate-500"></p>
+            <button id="loadMoreBtn" type="button" class="btn-soft px-3 py-1.5 text-xs">
+              <svg class="icon icon-xs" aria-hidden="true"><use href="#i-arrow-down-wide-narrow"></use></svg>
+              მეტის ჩვენება
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="viewPanel-preview" role="tabpanel" aria-labelledby="view-preview" class="hidden">
+        <div class="p-4 sm:p-6">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <p id="previewMeta" class="text-xs text-slate-500"></p>
+            <span class="chip">მაქს. 50 სტრიქონი</span>
+          </div>
+
+          <div id="previewEmpty" class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 px-4 py-14">
+            <div class="flex flex-col items-center gap-2 text-center">
+              <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+                <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-layout-grid"></use></svg>
+              </span>
+              <p class="text-sm font-semibold text-slate-600">მონაცემები ჯერ არ არის</p>
+              <p class="max-w-xs text-xs text-slate-500">
+                ატვირთე ფაილი ან ჩასვი ტექსტი — აქ გამოჩნდება ცხრილის პირველი 50 სტრიქონი.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="previewTableWrap"
+            class="custom-scrollbar hidden max-h-[28rem] overflow-auto rounded-xl border border-slate-200"
+            role="region"
+            aria-label="Excel მონაცემების გადახედვა"
+            tabindex="0"
+          >
+            <table class="w-full border-collapse text-left text-xs">
+              <thead id="previewHead" class="table-head"></thead>
+              <tbody id="previewBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white/70">
+    <div
+      class="mx-auto flex max-w-7xl flex-col items-center gap-2 px-4 py-5 text-center text-xs text-slate-500 sm:flex-row sm:justify-between sm:text-left sm:px-6 lg:px-8"
+    >
+      <p>© <span id="year">2026</span> WordCounter · მონაცემები მუშავდება მხოლოდ შენს ბრაუზერში</p>
+      <p class="flex items-center gap-1.5">
+        <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
+        მზად არის Vercel-ისთვის
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
